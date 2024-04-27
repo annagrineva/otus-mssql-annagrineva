@@ -118,9 +118,11 @@ SELECT
 	ap.[InvoiceDate]
 FROM [Sales].[Customers] cst
 CROSS APPLY (
-			SELECT TOP (2) [StockItemID], [UnitPrice], [InvoiceDate]
+			SELECT TOP (2) 
+				[StockItemID], AVG([UnitPrice]) as UnitPrice, MAX([InvoiceDate]) as InvoiceDate
 			FROM [Sales].[Invoices] inv
 			JOIN [Sales].[InvoiceLines] inl on inl.[InvoiceID] = inv.[InvoiceID]
 			WHERE inv.[CustomerID] = cst.[CustomerID]
-			ORDER BY [UnitPrice] DESC
+			GROUP BY StockItemID
+			ORDER BY AVG([UnitPrice]) DESC
 			) ap;
